@@ -1,23 +1,27 @@
-import pygame
-import time
+import pygame, sys
 from datetime import datetime, timedelta
 
 # Initialize Pygame
 pygame.init()
 
-class Constants:
-    # Set the dimensions of the window
-    WIDTH, HEIGHT = 1600, 600
 
+FPS = 16
+fpsClock = pygame.time.Clock()
+
+class Constants:
     # Load the custom font and set the font size
-    FONT = pygame.font.Font('SF Funk Master.ttf', 120)
+    FONT = pygame.font.Font('font/SF Funk Master.ttf', 120)
 
     # Set the colors
     TEXT_COLOR = (0, 255, 255)
     BACKGROUND_COLOR = (0, 0, 0)
     END_STATE_COLOR = (255, 215, 0)
 
-screen = pygame.display.set_mode((Constants.WIDTH, Constants.HEIGHT), pygame.RESIZABLE)
+    MESSAGE = 'HAPPY NEW YEAR!!!'
+
+text = Constants.FONT.render(Constants.MESSAGE, True, Constants.END_STATE_COLOR)
+text_rect = text.get_rect()
+screen = pygame.display.set_mode((text_rect.width, text_rect.height), pygame.RESIZABLE)
 
 # Function to display the countdown timer
 def countdown():
@@ -35,24 +39,27 @@ def countdown():
         text_rect = text.get_rect(center=(screen.get_width()/2, screen.get_height()/2))
         screen.blit(text, text_rect)
         pygame.display.update()
-        time.sleep(1)
+        fpsClock.tick(FPS)
+        allow_done()
 
     display_end_state()
 
 # Function to display the end state
 def display_end_state():
-    # Display "HAPPY NEW YEAR!!!" when the countdown ends
-    text = Constants.FONT.render("HAPPY NEW YEAR!!!", True, Constants.END_STATE_COLOR)
-    screen.fill(Constants.BACKGROUND_COLOR)
-    text_rect = text.get_rect(center=(screen.get_width()/2, screen.get_height()/2))
-    screen.blit(text, text_rect)
-    pygame.display.update()
+    while True:
+        # Display "HAPPY NEW YEAR!!!" when the countdown ends
+        text = Constants.FONT.render(Constants.MESSAGE, True, Constants.END_STATE_COLOR)
+        screen.fill(Constants.BACKGROUND_COLOR)
+        text_rect = text.get_rect(center=(screen.get_width()/2, screen.get_height()/2))
+        screen.blit(text, text_rect)
+        pygame.display.update()
+        allow_done()
 
-# Start the countdown
-countdown()
-
-# Keep the window open
-while True:
+def allow_done():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
+            sys.exit();
+
+# Start the countdown
+countdown()
